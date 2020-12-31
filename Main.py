@@ -19,7 +19,7 @@ pygame.display.set_caption("Flappy Bird")
 clock = pygame.time.Clock()
 
 # Main function
-def main(genomes, config):
+def eval_genomes(genomes, config):
     """
     Main game loop that handles inputs
     """
@@ -31,6 +31,8 @@ def main(genomes, config):
     birds = []
 
     for g in genomes:
+        print("Hello")
+        print(g)
         net = neat.nn.FeedForwardNetwork.create(g, config)
         nets.append(net)
         birds.append(Bird(WIN))
@@ -53,7 +55,7 @@ def main(genomes, config):
         pipe_ind = 0
         if len(birds) > 0:
             if birds[0].x > game.pipes[0].right():
-                pipe_ind = 0
+                pipe_ind = 1
         else:
             run = False
             break
@@ -96,7 +98,32 @@ def run(config_path):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
-    winner = p.run(main,20)
+    winner = p.run(eval_genomes,20)
+
+# def run(config_file):
+#     """
+#     runs the NEAT algorithm to train a neural network to play flappy bird.
+#     :param config_file: location of config file
+#     :return: None
+#     """
+#     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
+#                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
+#                          config_file)
+
+#     # Create the population, which is the top-level object for a NEAT run.
+#     p = neat.Population(config)
+
+#     # Add a stdout reporter to show progress in the terminal.
+#     p.add_reporter(neat.StdOutReporter(True))
+#     stats = neat.StatisticsReporter()
+#     p.add_reporter(stats)
+#     #p.add_reporter(neat.Checkpointer(5))
+
+#     # Run for up to 50 generations.
+#     winner = p.run(eval_genomes, 50)
+
+#     # show final stats
+#     print('\nBest genome:\n{!s}'.format(winner))
 
 
 
