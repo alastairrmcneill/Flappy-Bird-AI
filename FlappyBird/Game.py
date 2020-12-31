@@ -3,11 +3,11 @@ The main game class for the flappy bird game. Stores all the game logic and func
 """
 
 import pygame
-from flappybird.Constants import bg_img
-from flappybird.Bird import Bird
-from flappybird.Base import Base
-from flappybird.Pipe import Pipe
-from flappybird.Constants import WIN_WIDTH, WIN_HEIGHT, FPS, BLACK, mediumFont, largeFont, smallFont, file_path
+from FlappyBird.Constants import bg_img
+from FlappyBird.Bird import Bird
+from FlappyBird.Base import Base
+from FlappyBird.Pipe import Pipe
+from FlappyBird.Constants import WIN_WIDTH, WIN_HEIGHT, FPS, BLACK, mediumFont, largeFont, smallFont, file_path
 
 class Game:
     def __init__(self, win):
@@ -25,7 +25,6 @@ class Game:
         Method sets or resets all the class information to reset the game
         """
         self.bg_img = bg_img
-        self.bird = Bird(self.win)
         self.base = Base(self.win)
         self.pipes = []
         self.pipes.append(Pipe(self.win))
@@ -67,7 +66,8 @@ class Game:
         Method draws the start screen to the window
         """
         self.win.blit(self.bg_img, (0,0))
-        self.bird.draw()
+        # for bird in self.birds:
+        #     bird.draw()
 
 
         welcome_message = mediumFont.render("Press SPACE to start", False, BLACK)
@@ -103,8 +103,10 @@ class Game:
                     self.reset()
                     return
 
-            self.bird.crash()
-            self.check_collisions()
+            # for bird in self.birds:
+            #     bird.crash()
+
+            # self.check_collisions()
 
             self.draw_end_screen(message)
 
@@ -117,7 +119,8 @@ class Game:
         self.win.blit(self.bg_img, (0,0))
         for pipe in self.pipes:
             pipe.draw()
-        self.bird.draw()
+        # for bird in self.birds:
+        #     bird.draw()
         self.base.draw()
 
 
@@ -174,11 +177,14 @@ class Game:
             f.write(str(self.score))
             f.close()
 
-    def jump(self):
+    def jump(self, bird):
         """
         Method causes bird to jump
         """
-        self.bird.jump()
+        # self.birds[index].jump()
+
+    # def add_bird(self):
+    #     self.birds.append(Bird(self.win))
 
     def add_pipes(self):
         """
@@ -190,13 +196,16 @@ class Game:
             self.pipes.append(Pipe(self.win))
             self.tick_count = 0
 
-    def get_score(self):
+    def pipe_passed(self, bird):
         """
         Adds one to the score if the pipe has been passed
         """
-        if not self.pipes[0].passed and self.bird.x > self.pipes[0].right():
+        if not self.pipes[0].passed and bird.x > self.pipes[0].right():
             self.score += 1
             self.pipes[0].passed = True
+            return True
+
+        return False
 
 
     def update(self):
@@ -206,36 +215,31 @@ class Game:
         if self.pipes[0].off_screen():
             self.pipes.pop(0)
 
-
-        self.bird.move()
         self.base.move()
+
         self.add_pipes()
         for pipe in self.pipes:
             pipe.move()
 
-        self.check_collisions()
-
-        self.get_score()
-
-    def check_collisions(self):
+    def check_collisions(self, bird):
         """
         Method checks if collision between bird and base, ceiling or pipes
         """
-        if self.bird.y < 0:
-            self.bird.hit_top = True
-            self.ended = True
+        return bird.y < 0 or bird.collide(self.pipes[0], self.base)
 
-        if self.bird.collide(self.pipes[0], self.base):
-            self.ended = True
 
-    def draw(self):
+    def draw(self, birds):
         """
         Method draws the bird, base, pipes and score to the screen
         """
         self.win.blit(self.bg_img, (0,0))
-        self.bird.draw()
+
+        for bird in birds:
+            bird.draw()
+
         for pipe in self.pipes:
             pipe.draw()
+
         self.base.draw()
 
         textsurface = largeFont.render(str(self.score), False, (0, 0, 0))
