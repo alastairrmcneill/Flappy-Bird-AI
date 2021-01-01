@@ -177,15 +177,6 @@ class Game:
             f.write(str(self.score))
             f.close()
 
-    def jump(self, bird):
-        """
-        Method causes bird to jump
-        """
-        # self.birds[index].jump()
-
-    # def add_bird(self):
-    #     self.birds.append(Bird(self.win))
-
     def add_pipes(self):
         """
         Method adds pipes every 80 frames

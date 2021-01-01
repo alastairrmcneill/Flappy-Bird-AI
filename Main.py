@@ -39,9 +39,6 @@ def eval_genomes(genomes, config):
         g.fitness = 0
         ge.append(g)
 
-
-
-
     while run:
         clock.tick(FPS)
 
@@ -89,8 +86,8 @@ def eval_genomes(genomes, config):
 
 def run(config_path):
     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
-                         neat.DefaultSpeciesSet, neat.DefaultStagnation,
-                         config_path)
+                                neat.DefaultSpeciesSet, neat.DefaultStagnation,
+                                config_path)
 
     p = neat.Population(config)
 
@@ -99,33 +96,6 @@ def run(config_path):
     p.add_reporter(stats)
 
     winner = p.run(eval_genomes,20)
-
-# def run(config_file):
-#     """
-#     runs the NEAT algorithm to train a neural network to play flappy bird.
-#     :param config_file: location of config file
-#     :return: None
-#     """
-#     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
-#                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
-#                          config_file)
-
-#     # Create the population, which is the top-level object for a NEAT run.
-#     p = neat.Population(config)
-
-#     # Add a stdout reporter to show progress in the terminal.
-#     p.add_reporter(neat.StdOutReporter(True))
-#     stats = neat.StatisticsReporter()
-#     p.add_reporter(stats)
-#     #p.add_reporter(neat.Checkpointer(5))
-
-#     # Run for up to 50 generations.
-#     winner = p.run(eval_genomes, 50)
-
-#     # show final stats
-#     print('\nBest genome:\n{!s}'.format(winner))
-
-
 
 
 if __name__ == "__main__":
