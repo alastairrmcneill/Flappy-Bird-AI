@@ -4,10 +4,9 @@ The main game class for the flappy bird game. Stores all the game logic and func
 
 import pygame
 from FlappyBird.Constants import bg_img
-from FlappyBird.Bird import Bird
 from FlappyBird.Base import Base
 from FlappyBird.Pipe import Pipe
-from FlappyBird.Constants import WIN_WIDTH, WIN_HEIGHT, FPS, BLACK, mediumFont, largeFont, smallFont, file_path
+from FlappyBird.Constants import WIN_WIDTH, WIN_HEIGHT, FPS, BLACK, mediumFont, largeFont, file_path
 
 class Game:
     def __init__(self, win):
@@ -30,152 +29,6 @@ class Game:
         self.pipes.append(Pipe(self.win))
         self.tick_count = 0
         self.score = 0
-        self.highScore = 0
-        self.get_high_score()
-        self.started = False
-        self.running = True
-        self.ended = False
-        self.clock = pygame.time.Clock()
-
-    def start_screen(self):
-        """
-        Method is the loop for the start screen, handling the logic
-        """
-        delay = 10
-        run = True
-
-        while run:
-            delay -= 1
-            self.clock.tick(FPS)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    run = False
-                    pygame.quit()
-                    quit()
-
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_SPACE]:
-                if delay < 0:
-                    self.started = True
-                    run = False
-
-            self.draw_start_screen()
-
-    def draw_start_screen(self):
-        """
-        Method draws the start screen to the window
-        """
-        self.win.blit(self.bg_img, (0,0))
-        # for bird in self.birds:
-        #     bird.draw()
-
-
-        welcome_message = mediumFont.render("Press SPACE to start", False, BLACK)
-        rect = welcome_message.get_rect(center=(WIN_WIDTH/2, WIN_HEIGHT/2 + 50))
-        self.win.blit(welcome_message, rect)
-
-        pygame.display.update()
-
-    def end_screen(self):
-        """
-        Method is the loop for the end game screen, handles the logic to start again
-        """
-        self.set_high_score()
-
-        run = True
-        delay = 30
-        message = ""
-
-        while run:
-            delay -= 1
-
-            self.clock.tick(FPS)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    run = False
-                    pygame.quit()
-                    quit()
-            if delay < 0:
-                message = "Press SPACE to restart game"
-                keys = pygame.key.get_pressed()
-                if keys[pygame.K_SPACE]:
-                    run = False
-                    self.reset()
-                    return
-
-            # for bird in self.birds:
-            #     bird.crash()
-
-            # self.check_collisions()
-
-            self.draw_end_screen(message)
-
-    def draw_end_screen(self, message):
-        """
-        Method draws the end screen to the window
-        Arguments:
-            message {String} -- The message to the user written on the screen
-        """
-        self.win.blit(self.bg_img, (0,0))
-        for pipe in self.pipes:
-            pipe.draw()
-        # for bird in self.birds:
-        #     bird.draw()
-        self.base.draw()
-
-
-        self.end_game_text(message)
-
-        pygame.display.update()
-
-    def end_game_text(self, message):
-        """
-        Method writes the message to the screen
-
-        Arguments:
-            message {String} -- Stringt o be written to the screen
-        """
-        game_over_text = mediumFont.render("Game Over", False, BLACK)
-        rect = game_over_text.get_rect(center=(WIN_WIDTH/2, WIN_HEIGHT/2))
-        self.win.blit(game_over_text, rect)
-
-        score_text = largeFont.render("Score: " + str(self.score), False, BLACK)
-        rect = score_text.get_rect(center = (WIN_WIDTH/2, WIN_HEIGHT/2 + 50))
-        self.win.blit(score_text, rect)
-
-        restart_text = smallFont.render(message, False, BLACK)
-        rect = restart_text.get_rect(center = (WIN_WIDTH/2, WIN_HEIGHT - 100))
-        self.win.blit(restart_text, rect)
-
-        if self.score > self.highScore and self.score > 0:
-            high_score_text = largeFont.render("New High Score!", False, BLACK)
-        else:
-            high_score_text = mediumFont.render("High Score: " + str(self.highScore), False, BLACK)
-
-        rect = high_score_text.get_rect(center = (WIN_WIDTH/2, WIN_HEIGHT/2 - 100))
-        self.win.blit(high_score_text, rect)
-
-    def get_high_score(self):
-        """
-        Method gets the previous high score from file
-        """
-        try:
-            f = open(file_path, "r")
-            data = f.read()
-            f.close()
-
-            self.highScore = int(data)
-        except:
-            self.highScore = 0
-
-    def set_high_score(self):
-        """
-        Method writes the new high score to file
-        """
-        if self.score > self.highScore:
-            f = open(file_path,"w")
-            f.write(str(self.score))
-            f.close()
 
     def add_pipes(self):
         """
@@ -219,7 +72,7 @@ class Game:
         return bird.y < 0 or bird.collide(self.pipes[0], self.base)
 
 
-    def draw(self, birds):
+    def draw(self, birds, gen, alive):
         """
         Method draws the bird, base, pipes and score to the screen
         """
@@ -233,8 +86,12 @@ class Game:
 
         self.base.draw()
 
-        textsurface = largeFont.render(str(self.score), False, (0, 0, 0))
-        self.win.blit(textsurface, (10,10))
+        score_text = largeFont.render("Score: " + str(self.score), True, BLACK)
+        gen_text = mediumFont.render("Gen: " + str(gen), True, BLACK)
+        alive_text = mediumFont.render("Alive: " + str(alive), True, BLACK)
+        self.win.blit(score_text, (10,10))
+        self.win.blit(gen_text, (10, 50))
+        self.win.blit(alive_text, (10, 70))
 
 
         pygame.display.update()
