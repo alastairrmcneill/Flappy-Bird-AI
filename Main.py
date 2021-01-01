@@ -17,12 +17,15 @@ from FlappyBird.Bird import Bird
 WIN = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
 pygame.display.set_caption("Flappy Bird")
 clock = pygame.time.Clock()
+GEN = 0
 
 # Main function
 def eval_genomes(genomes, config):
     """
-    Main game loop that handles inputs
+    Our fitness function that allows us to evalatuate genomes by running them through the game and increasing their fitness
     """
+    global GEN
+    GEN += 1
     run = True
     game = Game(WIN)
 
@@ -78,11 +81,16 @@ def eval_genomes(genomes, config):
 
 
         game.update()                   # Move all the other pieces
-        game.draw(birds)                     # Draw all the pieces
+        game.draw(birds, GEN, len(birds))           # Draw all the pieces
 
 
 
 def run(config_path):
+    """
+    Function sets up the NEAT algorithm, creates the population with their networks, runs the game repeatedly
+    Arguments:
+        config_path {directory} -- Directory to the configuration file for the NEAT algorithm
+    """
     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
                                 neat.DefaultSpeciesSet, neat.DefaultStagnation,
                                 config_path)
@@ -97,5 +105,8 @@ def run(config_path):
 
 
 if __name__ == "__main__":
+    """
+    If we are running this file then excute the run function
+    """
     config_path = os.path.join(base_path, "config-feedforward.txt")
     run(config_path)
