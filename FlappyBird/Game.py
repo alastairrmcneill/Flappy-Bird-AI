@@ -183,7 +183,7 @@ class Game:
         """
         self.tick_count += 1
 
-        if self.tick_count == 80:
+        if self.tick_count == 70:
             self.pipes.append(Pipe(self.win))
             self.tick_count = 0
 

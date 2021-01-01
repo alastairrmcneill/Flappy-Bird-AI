@@ -30,16 +30,15 @@ def eval_genomes(genomes, config):
     ge = []
     birds = []
 
-    for g in genomes:
-        print("Hello")
-        print(g)
-        net = neat.nn.FeedForwardNetwork.create(g, config)
+    for genome_id, genome in genomes:
+        net = neat.nn.FeedForwardNetwork.create(genome, config)
         nets.append(net)
         birds.append(Bird(WIN))
-        g.fitness = 0
-        ge.append(g)
+        genome.fitness = 0
+        ge.append(genome)
 
-    while run:
+
+    while run and len(birds) > 0:
         clock.tick(FPS)
 
         for event in pygame.event.get():
@@ -50,12 +49,9 @@ def eval_genomes(genomes, config):
 
 
         pipe_ind = 0
-        if len(birds) > 0:
-            if birds[0].x > game.pipes[0].right():
-                pipe_ind = 1
-        else:
-            run = False
-            break
+        if birds[0].x > game.pipes[0].right():
+            pipe_ind = 1
+
 
         for x, bird in enumerate(birds):
             bird.move()
@@ -65,8 +61,12 @@ def eval_genomes(genomes, config):
                                       abs(bird.y - game.pipes[pipe_ind].height),
                                       abs(bird.y - game.pipes[pipe_ind].bottom)))
 
-            if output[0] > 0.5:
+            if output[0] > 0.0:
                 bird.jump()
+
+        if game.pipe_passed(birds[0]):
+            for g in ge:
+                g.fitness += 1
 
         for x, bird in enumerate(birds):
             if game.check_collisions(bird):
@@ -75,9 +75,7 @@ def eval_genomes(genomes, config):
                 nets.pop(x)
                 ge.pop(x)
 
-        if game.pipe_passed(birds[0]):
-            for g in ge:
-                g.fitness += 5
+
 
         game.update()                   # Move all the other pieces
         game.draw(birds)                     # Draw all the pieces
