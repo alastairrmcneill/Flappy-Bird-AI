@@ -24,7 +24,6 @@ pipe_img = pygame.image.load(os.path.join(imgs_path,"pipe.png"))
 # Colours
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-RED = (255, 0, 0)
 
 # Game speed
 FPS = 30
@@ -32,9 +31,9 @@ VEL = 5
 
 # Fonts
 pygame.font.init()
-largeFont = pygame.font.SysFont('Marker Felt', 50)
-mediumFont = pygame.font.SysFont('Marker Felt', 30)
-smallFont = pygame.font.SysFont('Marker Felt', 20)
+largeFont = pygame.font.SysFont('Ariel', 50)
+mediumFont = pygame.font.SysFont('Ariel', 30)
+smallFont = pygame.font.SysFont('Ariel', 20)
 
 
 # Init File Path
