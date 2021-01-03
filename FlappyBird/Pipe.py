@@ -13,7 +13,7 @@ class Pipe:
         self.x = WIN_WIDTH + 10
         self.height = 0
         self.vel = VEL
-        self.gap = 150
+        self.gap = 140
         self.passed = False
 
         self.top = 0
